@@ -1,0 +1,139 @@
+src/lib/providers/brief-generator.ts
+  s_ed4d5c9bcc57d0::t_2f11c014162090 1-83
+docs/interview-demo.md
+  s_ed4d5c9bcc57d0::t_f45ef4035a9607 1-76
+src/lib/demo/scenarios.ts
+  s_ed4d5c9bcc57d0::t_37b0d973524d91 1-144
+src/app/api/demo/run/route.ts
+  s_ed4d5c9bcc57d0::t_e1b181a132f505 1-31
+src/lib/connectors/calendar.ts
+  s_ed4d5c9bcc57d0::t_60704866be8fa4 1-87
+.env.example
+  s_ed4d5c9bcc57d0::t_15221c43fb46b1 4
+  s_ed4d5c9bcc57d0::t_2f11c014162090 1-3,5-47
+src/lib/domain.ts
+  s_ed4d5c9bcc57d0::t_e1b181a132f505 1-71
+README.md
+  s_ed4d5c9bcc57d0::t_f45ef4035a9607 7-16,105,107,109-110,112-113
+  s_ed4d5c9bcc57d0::t_15221c43fb46b1 32
+  s_ed4d5c9bcc57d0::t_92092ade43f202 1-6,17-31,33-104,106,108,111,114-172
+src/lib/demo/data.ts
+  s_ed4d5c9bcc57d0::t_2f11c014162090 1-11
+src/app/page.tsx
+  s_ed4d5c9bcc57d0::t_bf8ae2aa7b6c14 1-137
+package.json
+  s_ed4d5c9bcc57d0::t_92092ade43f202 1-46
+src/lib/pipeline/compile-brief.ts
+  s_ed4d5c9bcc57d0::t_e1b181a132f505 1-54
+src/lib/demo/run-scenario.ts
+  s_ed4d5c9bcc57d0::t_e1b181a132f505 1-43
+src/app/globals.css
+  s_ed4d5c9bcc57d0::t_6259b303b1caee 105,109-110
+  s_ed4d5c9bcc57d0::t_9518a1fc825253 111
+  s_ed4d5c9bcc57d0::t_646c8038cb10b2 1-104,106-108,112-113
+src/lib/__tests__/demo-scenarios.test.ts
+  s_ed4d5c9bcc57d0::t_f45ef4035a9607 1-32
+src/lib/config.ts
+  s_ed4d5c9bcc57d0::t_2f11c014162090 1-63
+src/lib/connectors/mock.ts
+  s_ed4d5c9bcc57d0::t_37b0d973524d91 2-14,16-34
+  s_ed4d5c9bcc57d0::t_b76c665aff8bc8 15
+  s_ed4d5c9bcc57d0::t_1c24e79ea7ae08 1
+src/components/demo-workbench.tsx
+  s_ed4d5c9bcc57d0::t_b8ac7898ede8e7 209
+  s_ed4d5c9bcc57d0::t_1297d849c5b5e3 1-208,210-223
+.github/workflows/ci.yml
+  s_ed4d5c9bcc57d0::t_92092ade43f202 1-25
+.gitignore
+  s_40d1e8a8d578cb::t_b1dd746c1c2ba8 1-8
+CONTRIBUTING.md
+  s_33b38b54d4dfd2::t_66828cf1e1034f 1-12
+LICENSE
+  s_40d1e8a8d578cb::t_eea3a898fc475c 1-21
+SECURITY.md
+  s_33b38b54d4dfd2::t_8716633dd3f285 1-13
+docs/architecture.md
+  s_33b38b54d4dfd2::t_0576b1632bccdc 1-47
+eslint.config.mjs
+  s_40d1e8a8d578cb::t_c2c2c09e5c58e9 1-9
+next-env.d.ts
+  s_ed4d5c9bcc57d0::t_bc96587c297594 1-6
+next.config.ts
+  s_33b38b54d4dfd2::t_502ddbbb7191a7 1-11
+package-lock.json
+  s_ed4d5c9bcc57d0::t_c8c00b57aa7da9 1-7485
+src/app/api/briefs/generate/route.ts
+  s_40d1e8a8d578cb::t_dec21f2e72bec9 1-26
+src/app/api/cron/prepare/route.ts
+  s_40d1e8a8d578cb::t_05f780f6d4b944 1-27
+src/app/api/health/route.ts
+  s_40d1e8a8d578cb::t_88c7f9c28afd6c 1-14
+src/lib/__tests__/brief.test.ts
+  s_33b38b54d4dfd2::t_b1381b732723b5 1-30
+src/lib/__tests__/pipeline.test.ts
+  s_33b38b54d4dfd2::t_4b0a9b34f22b2f 1-30
+src/lib/__tests__/setup.ts
+  s_33b38b54d4dfd2::t_8ce0f5572f04ad 1-3
+src/lib/auth.ts
+  s_40d1e8a8d578cb::t_c1d6a14154001d 1-12
+src/lib/connectors/gong.ts
+  s_2f35c586a11842::t_09643ba27f1483 1-67
+src/lib/connectors/hubspot.ts
+  s_2f35c586a11842::t_e7879fd39810ec 1-73
+src/lib/connectors/tavily.ts
+  s_2f35c586a11842::t_53af1e7d408533 1-51
+src/lib/delivery/slack.ts
+  s_33b38b54d4dfd2::t_bda6e6cc233f0d 1-68
+src/lib/http.ts
+  s_2f35c586a11842::t_19c5fee68bc27e 1-40
+src/lib/pipeline/process-meeting.ts
+  s_40d1e8a8d578cb::t_9eb65477d7cc27 1-22
+src/lib/store/delivery-store.ts
+  s_40d1e8a8d578cb::t_e2526a23776944 1-71
+tsconfig.json
+  s_ed4d5c9bcc57d0::t_56ab68f3d7098d 1-41
+vercel.json
+  s_40d1e8a8d578cb::t_0bce2ddaf801eb 1-9
+vitest.config.ts
+  s_33b38b54d4dfd2::t_26108a7261cab3 1-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "c2ff62b0b518c07e261730c2c4d334b5996edc78",
+  "prompts": {},
+  "sessions": {
+    "s_2f35c586a11842": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019fb8b9-aa7c-75b3-8298-981d18930171",
+        "model": "unknown"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_33b38b54d4dfd2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019fab42-261b-7742-81cd-b64321858e38",
+        "model": "unknown"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_40d1e8a8d578cb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fb8b9-aa7c-75b3-8298-981d18930171",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_ed4d5c9bcc57d0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fba18-4237-7210-91a5-170750458fa8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
