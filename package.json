@@ -1,0 +1,46 @@
+{
+  "name": "signalbrief",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Open-source, just-in-time account research delivered to every seller in Slack.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "latest",
+    "@ai-sdk/openai": "latest",
+    "@openrouter/ai-sdk-provider": "^3.0.0",
+    "ai": "latest",
+    "lucide-react": "latest",
+    "next": "^16.2.12",
+    "postcss": "^8.5.25",
+    "react": "latest",
+    "react-dom": "latest",
+    "sharp": "^0.35.3",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "^16.2.12",
+    "typescript": "latest",
+    "vitest": "latest"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "overrides": {
+    "postcss": "$postcss",
+    "sharp": "$sharp"
+  }
+}
