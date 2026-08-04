@@ -8,6 +8,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    include: ["src/**/*.test.ts"],
     setupFiles: ["./src/lib/__tests__/setup.ts"],
   },
 });

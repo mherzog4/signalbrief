@@ -36,6 +36,10 @@ Curated brief fixtures are the default compiler for the public deployment. This 
 - Slack Block Kit rendering
 - Protected live generation and cron routes
 - Optional Redis delivery idempotency
+- Request IDs, structured operational events, and a graceful UI error boundary
+- Best-effort public rate limiting with explicit headers
+- Scheduled production smoke tests and a real Chromium CI journey
+- Executable grounding, numeric-claim, source-coverage, concision, and actionability evaluations
 
 ## OpenRouter story
 
@@ -63,6 +67,8 @@ Connectors run independently and return `ok`, `skipped`, or `error`. One unavail
 
 The prompt restricts generation to supplied evidence, retrieved content is delimited as untrusted data, output is schema-validated, linked sources are preserved, and a deterministic fallback is available. A production version should add claim-to-source entailment checks.
 
+The repository also includes an executable evaluation harness. It scores factual overlap, requires every numeric claim to appear in normalized evidence, measures source coverage and concision, and includes a negative test that injects a plausible `$999m` hallucination.
+
 ### How would this scale?
 
 The next step is one durable job per meeting, backed by Redis or a workflow engine. That gives per-meeting retries, concurrency limits, replay, and dead-letter handling instead of holding an entire calendar batch inside one cron invocation.
@@ -73,4 +79,4 @@ It is the smallest credible OSS trust boundary. Credentials remain in the adopte
 
 ## Production gaps
 
-The interview demo intentionally does not hide the remaining work: renewable calendar OAuth, real provider credentials, Gong transcript retrieval, Slack OAuth, mandatory durable deduplication, durable jobs, observability, and broader integration tests.
+The interview demo intentionally does not hide the remaining work for a real customer deployment: renewable calendar OAuth, real provider credentials, Gong transcript retrieval, Slack OAuth, mandatory durable deduplication, durable jobs, tenant isolation, and provider-specific integration tests.

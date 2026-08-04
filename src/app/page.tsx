@@ -20,20 +20,22 @@ import {
 import { DemoWorkbench } from "@/components/demo-workbench";
 import { Logo } from "@/components/logo";
 import { getDemoScenarioPreviews } from "@/lib/demo/scenarios";
+import { getRepositoryLinks, siteConfig } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
 const nav = [
-  { label: "Overview", icon: LayoutDashboard, active: true },
-  { label: "Briefs", icon: Sparkles },
-  { label: "Meetings", icon: CalendarDays },
-  { label: "Sources", icon: Radio },
+  { label: "Overview", href: "#overview", icon: LayoutDashboard, active: true },
+  { label: "Briefs", href: "#brief-preview", icon: Sparkles },
+  { label: "Meetings", href: "#meetings", icon: CalendarDays },
+  { label: "Sources", href: "#integrations", icon: Radio },
 ];
 
 export default function DashboardPage() {
   const scenarios = getDemoScenarioPreviews();
   const meeting = scenarios[0].meeting;
-  const repositoryUrl = process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com";
+  const repositoryUrl = process.env.NEXT_PUBLIC_GITHUB_URL ?? siteConfig.repositoryUrl;
+  const repositoryLinks = getRepositoryLinks(repositoryUrl);
   const todayLabel = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     month: "long",
@@ -46,20 +48,20 @@ export default function DashboardPage() {
         <Logo />
         <nav aria-label="Primary navigation">
           <p>Workspace</p>
-          {nav.map(({ label, icon: Icon, active }) => <a className={active ? "nav-item active" : "nav-item"} href={`#${label.toLowerCase()}`} key={label}><Icon size={17} />{label}</a>)}
+          {nav.map(({ label, href, icon: Icon, active }) => <a className={active ? "nav-item active" : "nav-item"} href={href} key={label}><Icon size={17} />{label}</a>)}
           <p className="nav-group">Manage</p>
           <a className="nav-item" href="#integrations"><Webhook size={17} />Integrations</a>
-          <a className="nav-item" href="#settings"><Settings size={17} />Settings</a>
+          <a className="nav-item" href={repositoryLinks.configuration} target="_blank" rel="noreferrer"><Settings size={17} />Configuration</a>
         </nav>
         <div className="sidebar-bottom">
           <div className="setup-card">
             <div className="setup-icon"><ShieldCheck size={17} /></div>
             <strong>Your keys. Your data.</strong>
             <p>Signalbrief runs in your Vercel account. Credentials never leave your deployment.</p>
-            <a href={`${repositoryUrl}#deploy-on-vercel`} target="_blank" rel="noreferrer">Deployment guide <ArrowRight size={13} /></a>
+            <a href={repositoryLinks.deployment} target="_blank" rel="noreferrer">Deployment guide <ArrowRight size={13} /></a>
           </div>
-          <a className="nav-item" href="#docs"><BookOpen size={17} />Documentation</a>
-          <a className="nav-item" href="#help"><CircleHelp size={17} />Get help</a>
+          <a className="nav-item" href={repositoryLinks.documentation} target="_blank" rel="noreferrer"><BookOpen size={17} />Documentation</a>
+          <a className="nav-item" href={repositoryLinks.help} target="_blank" rel="noreferrer"><CircleHelp size={17} />Get help</a>
           <div className="profile"><span>MH</span><div><strong>Matt’s workspace</strong><small>Open-source edition</small></div><ChevronRight size={15} /></div>
         </div>
       </aside>
@@ -71,7 +73,7 @@ export default function DashboardPage() {
           <a className="github-button" href={repositoryUrl} target="_blank" rel="noreferrer"><GitFork size={16} /> Star on GitHub</a>
         </header>
 
-        <div className="page-content">
+        <div className="page-content" id="overview">
           <div className="welcome-row">
             <div><p className="eyebrow">{todayLabel}</p><h1>Good morning, Matt.</h1><p>Your sellers have <strong>3 customer calls</strong> today. Here’s what Signalbrief is preparing.</p></div>
             <a className="primary-action" href="#brief-preview"><Sparkles size={16} /> Preview next brief</a>
@@ -85,7 +87,7 @@ export default function DashboardPage() {
 
           <div className="dashboard-grid">
             <section className="panel upcoming" id="meetings">
-              <div className="panel-head"><div><p className="eyebrow">Up next</p><h2>Today’s meetings</h2></div><button aria-label="More meeting options">•••</button></div>
+              <div className="panel-head"><div><p className="eyebrow">Up next</p><h2>Today’s meetings</h2></div></div>
               <article className="meeting-card active-meeting">
                 <div className="time-column"><strong>10:30</strong><span>AM</span><i /></div>
                 <div className="meeting-detail"><div className="meeting-title"><span className="company-mark acme">A</span><div><strong>{meeting.title}</strong><p>in 24 minutes · 30 min</p></div></div><div className="attendees"><Users size={14} /><span>Alex Rivera, Priya Shah</span></div><div className="ready-tag"><CheckCircle2 size={14} /> Brief ready</div></div>
@@ -109,7 +111,7 @@ export default function DashboardPage() {
                 <Source icon="H" color="orange" name="HubSpot" detail="CRM opportunity fixtures" />
                 <Source icon="↗" color="green" name="Public web" detail="News + hiring fixtures" />
               </div>
-              <a className="manage-link" href="#settings">Manage sources <ArrowRight size={14} /></a>
+              <a className="manage-link" href={repositoryLinks.configuration} target="_blank" rel="noreferrer">Configure sources <ArrowRight size={14} /></a>
             </section>
           </div>
 

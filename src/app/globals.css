@@ -18,6 +18,7 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: Inte
 button, a { font: inherit; }
 a { color: inherit; text-decoration: none; }
 button { color: inherit; }
+button:focus-visible, a:focus-visible { outline: 3px solid rgb(67 123 101 / 35%); outline-offset: 3px; }
 
 .app-shell { min-height: 100vh; display: grid; grid-template-columns: 236px minmax(0, 1fr); }
 .sidebar { position: fixed; inset: 0 auto 0 0; width: 236px; padding: 27px 18px 20px; background: #f6f8f5; border-right: 1px solid var(--line); display: flex; flex-direction: column; z-index: 10; }
@@ -98,6 +99,14 @@ main { grid-column: 2; min-width: 0; }
 
 .how-section { margin-top: 56px; padding: 45px 0; border-top: 1px solid var(--line); }.how-section > div:first-child { text-align: center; }.how-section h2 { margin: 0; color: var(--forest); font-family: Georgia, serif; font-size: 30px; font-weight: 500; letter-spacing: -.8px; }.steps { margin-top: 31px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }.steps article { min-height: 170px; padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: #fff; position: relative; }.steps article > span { position: absolute; top: 15px; right: 16px; color: #c1c8c4; font-family: Georgia, serif; font-size: 11px; }.steps svg { margin: 5px 0 19px; color: #4d7569; }.steps strong { display: block; font-family: Georgia, serif; font-size: 14px; font-weight: 600; }.steps p { margin: 8px 0 0; color: #7d8782; font-size: 10px; line-height: 1.55; }
 footer { min-height: 72px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 22px; }footer .logo { font-size: 14px; }footer .logo-mark { width: 24px; height: 24px; padding: 6px; }footer p { flex: 1; color: #8a938f; font-size: 9px; }footer > a { display: flex; align-items: center; gap: 5px; color: #59645f; font-size: 9px; font-weight: 700; }
+.error-page { min-height: 100vh; padding: 30px; display: grid; place-items: center; background: var(--paper); }
+.error-card { width: min(560px, 100%); padding: 38px; border: 1px solid var(--line); border-radius: 16px; background: #fff; box-shadow: var(--shadow); }
+.error-card > span { color: var(--coral); font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; }
+.error-card h1 { margin: 13px 0 0; color: var(--forest); font-family: Georgia, serif; font-size: 34px; font-weight: 500; }
+.error-card p { margin: 14px 0 24px; color: var(--muted); line-height: 1.6; }
+.error-card div { display: flex; flex-wrap: wrap; gap: 10px; }
+.error-card button, .error-card a { min-height: 42px; padding: 0 15px; border: 1px solid var(--forest); border-radius: 8px; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; font-weight: 700; }
+.error-card button { color: #fff; background: var(--forest); }.error-card a { color: var(--forest); background: #fff; }
 .spin { animation: spin 900ms linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } } @keyframes pulse { 50% { box-shadow: 0 0 0 5px transparent; } }
 

@@ -12,7 +12,10 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "eval": "tsx scripts/run-evals.ts",
+    "smoke": "node scripts/smoke-test.mjs"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
@@ -28,11 +31,13 @@
     "zod": "latest"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "latest",
     "eslint-config-next": "^16.2.12",
+    "tsx": "^4.23.5",
     "typescript": "latest",
     "vitest": "latest"
   },
