@@ -16,49 +16,66 @@ function escapeMrkdwn(value: string) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 }
 
-function bullets(items: string[]) {
-  return items.slice(0, 3).map((item) => `• ${escapeMrkdwn(item)}`).join("\n");
+function compact(value: string, maxLength: number) {
+  const normalized = value.replace(/\s+/g, " ").trim();
+  const clipped = normalized.length > maxLength
+    ? `${normalized.slice(0, maxLength - 1).trimEnd()}…`
+    : normalized;
+  return escapeMrkdwn(clipped);
 }
 
-export function briefToSlackBlocks(brief: MeetingBrief, attribution = "Prepared by Signalbrief"): SlackBlock[] {
+function bullets(items: string[], limit: number, maxLength: number) {
+  return items.slice(0, limit).map((item) => `• ${compact(item, maxLength)}`).join("\n");
+}
+
+function attendeeSummary(meeting?: Meeting) {
+  const attendees = meeting?.attendees.filter((attendee) => attendee.external).slice(0, 3) ?? [];
+  if (!attendees.length) return "External attendees available from the calendar event";
+  return attendees.map((attendee) => `${attendee.name}${attendee.title ? ` · ${attendee.title}` : ""}`).join("  |  ");
+}
+
+export function briefToSlackBlocks(
+  brief: MeetingBrief,
+  attribution = "Prepared by Signalbrief",
+  meeting?: Meeting,
+): SlackBlock[] {
   const meetingDate = new Date(brief.meetingTime);
   const time = Number.isNaN(meetingDate.getTime())
     ? "Upcoming meeting"
     : new Intl.DateTimeFormat("en-US", { weekday: "short", hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(meetingDate);
-  const sourceLinks = brief.sources.slice(0, 3).map((source) => source.url
+  const sourceLinks = brief.sources.slice(0, 2).map((source) => source.url
     ? `<${source.url}|${escapeMrkdwn(source.label)}>`
     : escapeMrkdwn(source.label)).join("  ·  ");
-  const questions = brief.discoveryQuestions.slice(0, 2).map((question) => `• ${escapeMrkdwn(question)}`).join("\n");
-  const watchOut = brief.watchOuts[0] ? escapeMrkdwn(brief.watchOuts[0]) : "No material risk surfaced—validate assumptions early.";
+  const questions = bullets(brief.discoveryQuestions, 2, 88);
+  const watchOut = brief.watchOuts[0] ? compact(brief.watchOuts[0], 105) : "Validate the core assumptions early.";
 
   return [
-    { type: "header", text: { type: "plain_text", text: brief.accountName.slice(0, 150), emoji: true } },
-    section(`*PRE-CALL BRIEF*  ·  ${escapeMrkdwn(brief.meetingTitle)}\n${time}  ·  *${brief.confidence} confidence*`),
-    section(`*WHY NOW*\n${escapeMrkdwn(brief.whyNow)}`),
+    { type: "header", text: { type: "plain_text", text: `🎯 ${brief.accountName} · 60-second prep`.slice(0, 150), emoji: true } },
+    { type: "context", elements: [{ type: "mrkdwn", text: `*${compact(brief.meetingTitle, 100)}*  ·  ${time}  ·  *${brief.confidence} confidence*` }] },
+    section(`*👥 WHO'S IN THE ROOM*\n${compact(attendeeSummary(meeting), 165)}\n*Latest signal:* ${compact(brief.relationshipContext[0], 125)}`),
+    section(`*⚡ WHY NOW*\n${compact(brief.whyNow, 190)}`),
     {
       type: "section",
       fields: [
-        { type: "mrkdwn", text: `*ACCOUNT IN 30 SECONDS*\n${bullets(brief.accountSnapshot)}` },
-        { type: "mrkdwn", text: `*WHAT WE ALREADY KNOW*\n${bullets(brief.relationshipContext)}` },
+        { type: "mrkdwn", text: `*🧭 KNOW*\n${bullets(brief.accountSnapshot, 3, 72)}` },
+        { type: "mrkdwn", text: `*▶️ YOUR ANGLE*\n${bullets(brief.recommendedPlays, 2, 82)}` },
       ],
     },
-    { type: "divider" },
-    section(`*YOUR PLAY*\n${brief.recommendedPlays.slice(0, 3).map((play, index) => `${index + 1}.  ${escapeMrkdwn(play)}`).join("\n")}`),
     {
       type: "section",
       fields: [
-        { type: "mrkdwn", text: `*ASK ON THE CALL*\n${questions}` },
-        { type: "mrkdwn", text: `*WATCH FOR*\n⚠️ ${watchOut}` },
+        { type: "mrkdwn", text: `*❓ ASK*\n${questions}` },
+        { type: "mrkdwn", text: `*⚠️ WATCH FOR*\n${watchOut}` },
       ],
     },
-    { type: "context", elements: [{ type: "mrkdwn", text: `${sourceLinks ? `*Sources:* ${sourceLinks}  ·  ` : ""}${escapeMrkdwn(attribution)}` }] },
+    { type: "context", elements: [{ type: "mrkdwn", text: `${sourceLinks ? `*Sources:* ${sourceLinks}  ·  ` : ""}${compact(attribution, 90)}` }] },
   ];
 }
 
-export function briefToSlackPayload(brief: MeetingBrief, attribution?: string): SlackPayload {
+export function briefToSlackPayload(brief: MeetingBrief, attribution?: string, meeting?: Meeting): SlackPayload {
   return {
-    text: `Pre-call brief for ${brief.accountName}: ${brief.whyNow}`,
-    attachments: [{ color: "#e56f61", blocks: briefToSlackBlocks(brief, attribution) }],
+    text: `🎯 ${brief.accountName} pre-call brief is ready`,
+    attachments: [{ color: "#e56f61", blocks: briefToSlackBlocks(brief, attribution, meeting) }],
   };
 }
 
@@ -75,7 +92,7 @@ export async function deliverBrief(meeting: Meeting, brief: MeetingBrief) {
   const attribution = config.AI_PROVIDER === "openrouter"
     ? `Powered by OpenRouter · ${config.AI_MODEL}`
     : `Prepared with ${config.AI_PROVIDER} · ${config.AI_MODEL}`;
-  const payload = briefToSlackPayload(brief, attribution);
+  const payload = briefToSlackPayload(brief, attribution, meeting);
   const blocks = payload.attachments[0].blocks;
 
   if (config.DRY_RUN === "true") return { delivered: false, mode: "dry-run" as const, blocks };

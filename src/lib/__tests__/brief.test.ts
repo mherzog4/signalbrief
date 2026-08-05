@@ -36,17 +36,19 @@ describe("meeting brief contract", () => {
   });
 
   it("renders a compact, visually grouped Slack brief with the AE essentials", () => {
-    const blocks = briefToSlackBlocks(getDemoBrief(), "Powered by OpenRouter · openai/gpt-5-mini");
-    const payload = briefToSlackPayload(getDemoBrief(), "Powered by OpenRouter · openai/gpt-5-mini");
+    const meeting = getDemoMeeting();
+    const blocks = briefToSlackBlocks(getDemoBrief(), "Powered by OpenRouter · openai/gpt-5-mini", meeting);
+    const payload = briefToSlackPayload(getDemoBrief(), "Powered by OpenRouter · openai/gpt-5-mini", meeting);
     const serialized = JSON.stringify(blocks);
 
-    expect(blocks).toHaveLength(8);
+    expect(blocks).toHaveLength(7);
     expect(serialized).toContain("WHY NOW");
-    expect(serialized).toContain("ACCOUNT IN 30 SECONDS");
-    expect(serialized).toContain("YOUR PLAY");
-    expect(serialized).toContain("ASK ON THE CALL");
+    expect(serialized).toContain("WHO'S IN THE ROOM");
+    expect(serialized).toContain("YOUR ANGLE");
+    expect(serialized).toContain("ASK");
     expect(serialized).toContain("Powered by OpenRouter");
     expect(serialized).toContain("Meridian AI");
+    expect(payload.text).toBe("🎯 Meridian AI pre-call brief is ready");
     expect(payload.attachments[0].color).toBe("#e56f61");
   });
 });
