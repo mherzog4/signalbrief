@@ -24,5 +24,5 @@ test("runs a transparent production-shaped brief workflow", async ({ page }) => 
   await expect(page.getByText("Curated fixture", { exact: true })).toBeVisible();
   await expect(page.getByText(/5 records · run/)).toBeVisible();
   await expect(page.getByText(/Gong, HubSpot, and public records are synthetic/)).toBeVisible();
-  await expect(page.getByText("$240k new-logo opportunity", { exact: true })).toBeVisible();
+  await expect(page.getByText("Synthetic CRM — $240k annual model spend", { exact: true })).toBeVisible();
 });
