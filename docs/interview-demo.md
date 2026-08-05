@@ -11,7 +11,7 @@ Hosted demo: [signalbrief-alpha.vercel.app](https://signalbrief-alpha.vercel.app
    - Acme Corp: multi-thread an expansion around a new CRO mandate.
    - Northstar: unblock a technical/security review on a $240k opportunity.
    - Lumen Labs: prepare a first-call hypothesis from sparse CRM and public signals.
-3. Select **Generate brief**. The API fans out to three `ResearchConnector` implementations concurrently. For the demo they are deterministic mock adapters; production adapters call Gong, HubSpot, and a web-research provider.
+3. Select **Generate brief**. When controlled Slack delivery is enabled, this becomes **Generate + send to Slack**. The API fans out to three `ResearchConnector` implementations concurrently. For the demo they are deterministic mock adapters; production adapters call Gong, HubSpot, and a web-research provider.
 4. Read the Slack brief from top to bottom: why now, account snapshot, relationship context, recommended plays, and sourced evidence.
 5. Inspect the execution trace. It shows per-connector latency and evidence count, model mode, generation time, total duration, normalized evidence, and a unique run ID.
 6. Switch scenarios to demonstrate how the same contract behaves with dense late-stage evidence versus sparse first-call evidence.
@@ -51,7 +51,7 @@ This design demonstrates three production concerns:
 
 1. Provider portability: the compiler depends on the AI SDK language-model contract, not one model vendor.
 2. Output reliability: every model response must satisfy the same `MeetingBrief` Zod schema.
-3. Cost safety: the public surface cannot incur AI spend unless the deployer explicitly enables live demo generation.
+3. Cost safety: the public surface cannot incur AI spend or post to Slack unless the deployer explicitly enables each capability. Slack delivery has its own one-message-per-minute client limit.
 
 ## Likely technical questions
 

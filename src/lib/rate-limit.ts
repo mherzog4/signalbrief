@@ -35,6 +35,7 @@ export class FixedWindowRateLimiter {
 }
 
 export const demoRateLimiter = new FixedWindowRateLimiter();
+export const demoSlackDeliveryRateLimiter = new FixedWindowRateLimiter();
 
 export function getClientKey(request: Request) {
   const forwarded = request.headers.get("x-vercel-forwarded-for")

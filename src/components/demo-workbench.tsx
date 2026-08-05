@@ -11,6 +11,10 @@ type DemoRunResult = {
   evidence: Evidence[];
   connectorResults: ConnectorResult[];
   generationDurationMs: number;
+  delivery?: {
+    delivered: boolean;
+    mode: "webhook" | "bot" | "dry-run" | "unconfigured";
+  };
   trace: {
     runId: string;
     mode: "live" | "fixture";
@@ -30,7 +34,13 @@ const sourceMeta = {
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export function DemoWorkbench({ scenarios }: { scenarios: DemoScenarioPreview[] }) {
+export function DemoWorkbench({
+  scenarios,
+  slackDeliveryEnabled,
+}: {
+  scenarios: DemoScenarioPreview[];
+  slackDeliveryEnabled: boolean;
+}) {
   const [activeId, setActiveId] = useState(scenarios[0].id);
   const [brief, setBrief] = useState(scenarios[0].brief);
   const [running, setRunning] = useState(false);
@@ -64,7 +74,7 @@ export function DemoWorkbench({ scenarios }: { scenarios: DemoScenarioPreview[] 
       const request = fetch("/api/demo/run", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ scenarioId: activeId }),
+        body: JSON.stringify({ scenarioId: activeId, deliverToSlack: slackDeliveryEnabled }),
       });
       await wait(420);
       if (sequence !== runSequence.current) return;
@@ -98,7 +108,11 @@ export function DemoWorkbench({ scenarios }: { scenarios: DemoScenarioPreview[] 
         </div>
         <button className="run-button" onClick={runDemo} disabled={running}>
           {running ? <LoaderCircle size={16} className="spin" /> : <Play size={15} fill="currentColor" />}
-          {running ? phases[Math.min(phase, 2)] : result ? "Run again" : "Generate brief"}
+          {running
+            ? phases[Math.min(phase, 2)]
+            : result
+              ? slackDeliveryEnabled ? "Generate + send again" : "Run again"
+              : slackDeliveryEnabled ? "Generate + send to Slack" : "Generate brief"}
         </button>
       </div>
 
@@ -215,6 +229,9 @@ export function DemoWorkbench({ scenarios }: { scenarios: DemoScenarioPreview[] 
           </div>
         ) : (
           <p className="execution-note">Generate a brief to inspect normalized evidence, independent connector timings, model mode, and the exact payload rendered into Slack.</p>
+        )}
+        {result?.delivery?.delivered && (
+          <p className="synthetic-note"><Check size={12} /> Delivered to Slack via {result.delivery.mode}.</p>
         )}
         <p className="synthetic-note"><Check size={12} /> Gong, HubSpot, and public records are synthetic. Adapter contracts, parallel fan-out, schema validation, trace timings, and Slack rendering are production code.</p>
       </div>

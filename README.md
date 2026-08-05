@@ -19,6 +19,7 @@ The hosted demo is a transparent production simulation built for evaluating the 
 - Mocked: upstream calendar, Gong, HubSpot, and public-company records.
 - Real: API route, adapter fan-out, timing trace, evidence normalization, schema validation, scenario selection, and Slack Block Kit presentation.
 - Optional: set `DEMO_USE_LIVE_AI=true` with an OpenRouter key to replace curated fixture output with a live structured model call.
+- Optional: set `DEMO_SLACK_DELIVERY_ENABLED=true`, configure Slack, and disable `DRY_RUN` to turn the demo action into a controlled real delivery.
 
 See [docs/interview-demo.md](docs/interview-demo.md) for a five-minute walkthrough, design rationale, and expected technical questions.
 
@@ -118,7 +119,7 @@ Direct OpenAI and Anthropic modes remain available with `AI_PROVIDER=openai` or 
 
 If no model key is present, Signalbrief creates a deterministic brief from available evidence. This keeps demos and incident fallbacks usable, but a model is recommended for production-quality prioritization.
 
-The public interview demo keeps `DEMO_USE_LIVE_AI=false` by default, so repeated visitors cannot create provider spend. Turning it on is an explicit operator choice.
+The public interview demo keeps `DEMO_USE_LIVE_AI=false` and `DEMO_SLACK_DELIVERY_ENABLED=false` by default, so repeated visitors cannot create provider spend or Slack messages. Turning either on is an explicit operator choice. Demo Slack delivery is separately limited to one message per client per minute.
 
 ### Slack
 
@@ -128,7 +129,7 @@ For direct messages, set `SLACK_BOT_TOKEN` and map calendar organizer emails to 
 SLACK_USER_MAP={"maya@yourcompany.com":"U012ABCDEF"}
 ```
 
-The bot needs `chat:write` and `im:write`. If an organizer is not mapped, Signalbrief posts to `SLACK_CHANNEL_ID`. `SLACK_WEBHOOK_URL` is a simpler fixed-channel fallback.
+The bot needs `chat:write` and `im:write`. If an organizer is not mapped, Signalbrief posts to `SLACK_CHANNEL_ID`. `SLACK_WEBHOOK_URL` is a simpler fixed-channel fallback. Incoming webhooks are credentials: store them as sensitive environment variables and rotate them if exposed.
 
 ### Delivery idempotency
 
@@ -151,7 +152,7 @@ Vercel sends `CRON_SECRET` as a bearer token automatically. The included schedul
 | --- | --- | --- | --- |
 | `/` | GET | Public | Dashboard and demo |
 | `/api/health` | GET | Public, no secrets | Readiness and connector status |
-| `/api/demo/run` | POST | Public, rate-limited | Run one enumerated synthetic scenario |
+| `/api/demo/run` | POST | Public, rate-limited | Run one enumerated synthetic scenario; optionally deliver when explicitly enabled |
 | `/api/briefs/generate` | POST | `ADMIN_API_KEY` | Compile a brief without sending it |
 | `/api/cron/prepare` | GET | `CRON_SECRET` | Scan, compile, deduplicate, and deliver |
 

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 
 import { DemoWorkbench } from "@/components/demo-workbench";
+import { getConfig, getIntegrationStatus } from "@/lib/config";
 import { Logo } from "@/components/logo";
 import { getDemoScenarioPreviews } from "@/lib/demo/scenarios";
 import { getRepositoryLinks, siteConfig } from "@/lib/site";
@@ -32,6 +33,7 @@ const nav = [
 ];
 
 export default function DashboardPage() {
+  const config = getConfig();
   const scenarios = getDemoScenarioPreviews();
   const meeting = scenarios[0].meeting;
   const repositoryUrl = process.env.NEXT_PUBLIC_GITHUB_URL ?? siteConfig.repositoryUrl;
@@ -115,7 +117,12 @@ export default function DashboardPage() {
             </section>
           </div>
 
-          <DemoWorkbench scenarios={scenarios} />
+          <DemoWorkbench
+            scenarios={scenarios}
+            slackDeliveryEnabled={config.DEMO_SLACK_DELIVERY_ENABLED === "true"
+              && config.DRY_RUN !== "true"
+              && getIntegrationStatus(config).slack}
+          />
 
           <section className="how-section" id="how-it-works">
             <div><p className="eyebrow">Built for the moment before</p><h2>Research that arrives when it matters.</h2></div>

@@ -32,6 +32,7 @@ const envSchema = z.object({
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
   DEMO_MODE: z.enum(["true", "false"]).default("true"),
   DEMO_USE_LIVE_AI: z.enum(["true", "false"]).default("false"),
+  DEMO_SLACK_DELIVERY_ENABLED: z.enum(["true", "false"]).default("false"),
   DEMO_RATE_LIMIT_PER_MINUTE: z.coerce.number().int().min(1).max(120).default(12),
   DRY_RUN: z.enum(["true", "false"]).default("false"),
 });
