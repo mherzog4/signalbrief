@@ -5,6 +5,8 @@ test("runs a transparent production-shaped brief workflow", async ({ page }) => 
 
   await expect(page).toHaveTitle("Signalbrief — Walk into every call ready");
   await expect(page.getByRole("heading", { name: "Run the brief pipeline" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "OpenRouter Applied AI" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "OpenRouter" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Star on GitHub" })).toHaveAttribute(
     "href",
     "https://github.com/mherzog4/signalbrief",
