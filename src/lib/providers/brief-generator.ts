@@ -9,7 +9,20 @@ import { z } from "zod";
 import { getConfig } from "@/lib/config";
 import { meetingBriefSchema, type Evidence, type Meeting, type MeetingBrief } from "@/lib/domain";
 
-const generatedBriefSchema = meetingBriefSchema.omit({ generatedAt: true });
+// Model providers support a narrower JSON Schema dialect than Zod. In
+// particular, OpenRouter's OpenAI route rejects the `format: "uri"` emitted by
+// z.string().url(). Keep the model contract portable, then validate URLs with
+// the full domain schema before returning the brief.
+const generatedBriefSchema = meetingBriefSchema
+  .omit({ generatedAt: true, sources: true })
+  .extend({
+    sources: z.array(
+      z.object({
+        label: z.string(),
+        url: z.string().nullable(),
+      }),
+    ).max(6),
+  });
 
 const systemPrompt = `You are an elite account-based selling research analyst.
 Build a brief an account executive can scan in under 90 seconds immediately before a call.
@@ -77,7 +90,14 @@ export async function generateBrief(meeting: Meeting, evidence: Evidence[]): Pro
     temperature: 0.2,
   });
 
-  return meetingBriefSchema.parse({ ...output, generatedAt: new Date().toISOString() });
+  return meetingBriefSchema.parse({
+    ...output,
+    sources: output.sources.map((source) => ({
+      label: source.label,
+      url: source.url ?? undefined,
+    })),
+    generatedAt: new Date().toISOString(),
+  });
 }
 
 export const __testables = { fallbackBrief, generatedBriefSchema: generatedBriefSchema as z.ZodType };
