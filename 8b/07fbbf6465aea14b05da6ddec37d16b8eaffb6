@@ -1,0 +1,35 @@
+src/lib/config.ts
+  s_ed4d5c9bcc57d0::t_e4e483b501e0ee 20-22,56-60
+src/lib/__tests__/calendar.test.ts
+  s_ed4d5c9bcc57d0::t_269b4a5545349b 1-14
+README.md
+  s_ed4d5c9bcc57d0::t_db8a436cf42e0d 98,100-102
+src/lib/pipeline/process-meeting.ts
+  s_ed4d5c9bcc57d0::t_e4e483b501e0ee 4-5,16-20
+src/lib/connectors/calendar.ts
+  s_ed4d5c9bcc57d0::t_e4e483b501e0ee 3,10,18-51,73-74,89,102-104,107-119,127-128,133-134
+src/app/api/cron/prepare/route.ts
+  s_ed4d5c9bcc57d0::t_269b4a5545349b 3,18
+src/lib/domain.ts
+  s_ed4d5c9bcc57d0::t_e4e483b501e0ee 17
+docs/interview-demo.md
+  s_ed4d5c9bcc57d0::t_db8a436cf42e0d 19-20
+.env.example
+  s_ed4d5c9bcc57d0::t_db8a436cf42e0d 19,21-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "8b07fbbf6465aea14b05da6ddec37d16b8eaffb6",
+  "prompts": {},
+  "sessions": {
+    "s_ed4d5c9bcc57d0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fba18-4237-7210-91a5-170750458fa8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
