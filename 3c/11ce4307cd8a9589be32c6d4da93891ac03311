@@ -1,0 +1,24 @@
+src/lib/__tests__/brief.test.ts
+  s_ed4d5c9bcc57d0::t_0cc9ee2c1f51fe 51
+  s_ed4d5c9bcc57d0::t_b2d7fa5e5bba7a 54-60
+src/lib/providers/brief-generator.ts
+  s_ed4d5c9bcc57d0::t_0cc9ee2c1f51fe 29-32
+src/lib/delivery/slack.ts
+  s_ed4d5c9bcc57d0::t_0cc9ee2c1f51fe 19-20,23-24,45-46,50-52,56-57,67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "3c11ce4307cd8a9589be32c6d4da93891ac03311",
+  "prompts": {},
+  "sessions": {
+    "s_ed4d5c9bcc57d0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fba18-4237-7210-91a5-170750458fa8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
