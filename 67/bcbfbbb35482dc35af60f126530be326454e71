@@ -1,0 +1,48 @@
+src/lib/store/integration-store.ts
+  s_ed4d5c9bcc57d0::t_1e25967609b568 1-90
+src/lib/google-oauth.ts
+  s_ed4d5c9bcc57d0::t_1e25967609b568 1-102
+src/lib/__tests__/calendar-oauth.test.ts
+  s_ed4d5c9bcc57d0::t_1e25967609b568 1-27
+src/lib/connectors/calendar.ts
+  s_ed4d5c9bcc57d0::t_1e25967609b568 6,31-33,44,56-63
+  s_ed4d5c9bcc57d0::t_7d235616928708 64-65
+src/app/api/health/route.ts
+  s_ed4d5c9bcc57d0::t_1e25967609b568 2,6,8-9,14
+src/app/page.tsx
+  s_ed4d5c9bcc57d0::t_4e695c222b4bb8 38,40,127-132
+  s_ed4d5c9bcc57d0::t_1e25967609b568 21,23,25,41,120,122,159-160
+docs/interview-demo.md
+  s_ed4d5c9bcc57d0::t_1e25967609b568 19,40-41,85
+.env.example
+  s_ed4d5c9bcc57d0::t_1e25967609b568 17,21-22,44
+src/app/api/integrations/google/start/route.ts
+  s_ed4d5c9bcc57d0::t_1e25967609b568 1-28
+src/app/api/integrations/google/callback/route.ts
+  s_ed4d5c9bcc57d0::t_1e25967609b568 1-35
+src/components/calendar-connect.tsx
+  s_ed4d5c9bcc57d0::t_4e695c222b4bb8 3,10,13,17-23
+  s_ed4d5c9bcc57d0::t_1e25967609b568 1-2,4-9,11-12,14-16,24-82
+src/app/globals.css
+  s_ed4d5c9bcc57d0::t_1e25967609b568 79
+README.md
+  s_ed4d5c9bcc57d0::t_1e25967609b568 86,98-108,112
+src/app/api/cron/prepare/route.ts
+  s_ed4d5c9bcc57d0::t_285e094fb8b8aa 2-3,18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "67bcbfbbb35482dc35af60f126530be326454e71",
+  "prompts": {},
+  "sessions": {
+    "s_ed4d5c9bcc57d0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fba18-4237-7210-91a5-170750458fa8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
