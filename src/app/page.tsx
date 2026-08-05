@@ -36,6 +36,8 @@ export default function DashboardPage() {
   const config = getConfig();
   const scenarios = getDemoScenarioPreviews();
   const meeting = scenarios[0].meeting;
+  const northstarMeeting = scenarios[1].meeting;
+  const lumenMeeting = scenarios[2].meeting;
   const liveOpenRouter = config.DEMO_USE_LIVE_AI === "true" && config.AI_PROVIDER === "openrouter";
   const slackDeliveryEnabled = config.DEMO_SLACK_DELIVERY_ENABLED === "true"
     && config.DRY_RUN !== "true"
@@ -96,16 +98,16 @@ export default function DashboardPage() {
               <div className="panel-head"><div><p className="eyebrow">Up next</p><h2>Today’s meetings</h2></div></div>
               <article className="meeting-card active-meeting">
                 <div className="time-column"><strong>10:30</strong><span>AM</span><i /></div>
-                <div className="meeting-detail"><div className="meeting-title"><span className="company-mark acme">O</span><div><strong>{meeting.title}</strong><p>in 24 minutes · 30 min</p></div></div><div className="attendees"><Users size={14} /><span>{meeting.attendees.filter((attendee) => attendee.external).map((attendee) => attendee.name).join(", ")}</span></div><div className="ready-tag"><CheckCircle2 size={14} /> Brief ready</div></div>
+                <div className="meeting-detail"><div className="meeting-title"><span className="company-mark acme">M</span><div><strong>{meeting.title}</strong><p>in 24 minutes · 30 min</p></div></div><div className="attendees"><Users size={14} /><span>{meeting.attendees.filter((attendee) => attendee.external).map((attendee) => attendee.name).join(", ")}</span></div><div className="ready-tag"><CheckCircle2 size={14} /> Brief ready</div></div>
                 <a href="#brief-preview">Open <ChevronRight size={15} /></a>
               </article>
               <article className="meeting-card">
                 <div className="time-column"><strong>1:00</strong><span>PM</span><i /></div>
-                <div className="meeting-detail"><div className="meeting-title"><span className="company-mark northstar">N</span><div><strong>Northstar — Technical validation</strong><p>in 2 hours · 45 min</p></div></div><div className="attendees"><Users size={14} /><span>Jordan Lee + 2</span></div><div className="working-tag"><span className="pulse" /> Researching</div></div>
+                <div className="meeting-detail"><div className="meeting-title"><span className="company-mark northstar">N</span><div><strong>{northstarMeeting.title}</strong><p>in 2 hours · 45 min</p></div></div><div className="attendees"><Users size={14} /><span>{northstarMeeting.attendees.filter((attendee) => attendee.external).map((attendee) => attendee.name).join(", ")}</span></div><div className="working-tag"><span className="pulse" /> Researching</div></div>
               </article>
               <article className="meeting-card">
                 <div className="time-column"><strong>3:30</strong><span>PM</span><i /></div>
-                <div className="meeting-detail"><div className="meeting-title"><span className="company-mark lumen">L</span><div><strong>Lumen Labs — First conversation</strong><p>in 5 hours · 30 min</p></div></div><div className="attendees"><Users size={14} /><span>Sam Okafor</span></div><div className="queued-tag"><Clock3 size={13} /> Queued for 3:00</div></div>
+                <div className="meeting-detail"><div className="meeting-title"><span className="company-mark lumen">L</span><div><strong>{lumenMeeting.title}</strong><p>in 5 hours · 30 min</p></div></div><div className="attendees"><Users size={14} /><span>{lumenMeeting.attendees.filter((attendee) => attendee.external).map((attendee) => attendee.name).join(", ")}</span></div><div className="queued-tag"><Clock3 size={13} /> Queued for 3:00</div></div>
               </article>
             </section>
 

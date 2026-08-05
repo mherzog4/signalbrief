@@ -29,7 +29,7 @@ describe("meeting brief contract", () => {
   it("creates a useful deterministic brief when no model key is configured", () => {
     const brief = __testables.fallbackBrief(getDemoMeeting(), demoEvidence);
 
-    expect(brief.accountName).toBe("OpenRouter");
+    expect(brief.accountName).toBe("Meridian AI");
     expect(brief.accountSnapshot.length).toBeGreaterThanOrEqual(2);
     expect(brief.discoveryQuestions).toHaveLength(3);
     expect(brief.sources.some((source) => source.label.includes("Gong") || source.label.includes("call"))).toBe(true);
@@ -46,7 +46,7 @@ describe("meeting brief contract", () => {
     expect(serialized).toContain("YOUR PLAY");
     expect(serialized).toContain("ASK ON THE CALL");
     expect(serialized).toContain("Powered by OpenRouter");
-    expect(serialized).toContain("OpenRouter");
+    expect(serialized).toContain("Meridian AI");
     expect(payload.attachments[0].color).toBe("#e56f61");
   });
 });
