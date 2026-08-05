@@ -36,6 +36,10 @@ export default function DashboardPage() {
   const config = getConfig();
   const scenarios = getDemoScenarioPreviews();
   const meeting = scenarios[0].meeting;
+  const liveOpenRouter = config.DEMO_USE_LIVE_AI === "true" && config.AI_PROVIDER === "openrouter";
+  const slackDeliveryEnabled = config.DEMO_SLACK_DELIVERY_ENABLED === "true"
+    && config.DRY_RUN !== "true"
+    && getIntegrationStatus(config).slack;
   const repositoryUrl = process.env.NEXT_PUBLIC_GITHUB_URL ?? siteConfig.repositoryUrl;
   const repositoryLinks = getRepositoryLinks(repositoryUrl);
   const todayLabel = new Intl.DateTimeFormat("en-US", {
@@ -71,7 +75,7 @@ export default function DashboardPage() {
       <main>
         <header className="topbar">
           <div className="mobile-logo"><Logo compact /></div>
-          <div className="status-pill"><i /> Synthetic demo · ready</div>
+          <div className="status-pill"><i /> {liveOpenRouter ? "Live via OpenRouter" : "Synthetic demo"}{slackDeliveryEnabled ? " · Slack ready" : " · ready"}</div>
           <a className="github-button" href={repositoryUrl} target="_blank" rel="noreferrer"><GitFork size={16} /> Star on GitHub</a>
         </header>
 
@@ -92,7 +96,7 @@ export default function DashboardPage() {
               <div className="panel-head"><div><p className="eyebrow">Up next</p><h2>Today’s meetings</h2></div></div>
               <article className="meeting-card active-meeting">
                 <div className="time-column"><strong>10:30</strong><span>AM</span><i /></div>
-                <div className="meeting-detail"><div className="meeting-title"><span className="company-mark acme">A</span><div><strong>{meeting.title}</strong><p>in 24 minutes · 30 min</p></div></div><div className="attendees"><Users size={14} /><span>Alex Rivera, Priya Shah</span></div><div className="ready-tag"><CheckCircle2 size={14} /> Brief ready</div></div>
+                <div className="meeting-detail"><div className="meeting-title"><span className="company-mark acme">O</span><div><strong>{meeting.title}</strong><p>in 24 minutes · 30 min</p></div></div><div className="attendees"><Users size={14} /><span>{meeting.attendees.filter((attendee) => attendee.external).map((attendee) => attendee.name).join(", ")}</span></div><div className="ready-tag"><CheckCircle2 size={14} /> Brief ready</div></div>
                 <a href="#brief-preview">Open <ChevronRight size={15} /></a>
               </article>
               <article className="meeting-card">
@@ -119,9 +123,7 @@ export default function DashboardPage() {
 
           <DemoWorkbench
             scenarios={scenarios}
-            slackDeliveryEnabled={config.DEMO_SLACK_DELIVERY_ENABLED === "true"
-              && config.DRY_RUN !== "true"
-              && getIntegrationStatus(config).slack}
+            slackDeliveryEnabled={slackDeliveryEnabled}
           />
 
           <section className="how-section" id="how-it-works">

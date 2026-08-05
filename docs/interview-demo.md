@@ -8,7 +8,7 @@ Hosted demo: [signalbrief-alpha.vercel.app](https://signalbrief-alpha.vercel.app
 
 1. Start at the upcoming-meetings view. Explain that calendar events are the scheduling primitive: a cron scan selects external meetings inside a configurable prep window.
 2. Open **Run the brief pipeline** and choose one of three synthetic situations:
-   - Acme Corp: multi-thread an expansion around a new CRO mandate.
+   - OpenRouter: position a production applied-AI workflow around routing, structured outputs, BYOK, and reliability.
    - Northstar: unblock a technical/security review on a $240k opportunity.
    - Lumen Labs: prepare a first-call hypothesis from sparse CRM and public signals.
 3. Select **Generate brief**. When controlled Slack delivery is enabled, this becomes **Generate + send to Slack**. The API fans out to three `ResearchConnector` implementations concurrently. For the demo they are deterministic mock adapters; production adapters call Gong, HubSpot, and a web-research provider.

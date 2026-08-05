@@ -14,43 +14,50 @@ export type DemoScenarioPreview = Pick<DemoScenario, "id" | "label" | "stage" | 
 
 const fromNow = (now: Date, minutes: number) => new Date(now.getTime() + minutes * 60_000).toISOString();
 
-function acmeScenario(now: Date): DemoScenario {
+function openRouterScenario(now: Date): DemoScenario {
   const startsAt = fromNow(now, 24);
   const meeting: Meeting = {
-    id: "demo-acme-expansion",
-    title: "Acme Corp — Enterprise expansion",
+    id: "demo-openrouter-applied-ai",
+    title: "OpenRouter — Applied AI workflow review",
     startsAt,
     endsAt: fromNow(now, 54),
     ownerName: "Maya Chen",
     ownerSlackId: "UDEMO123",
     attendees: [
       { name: "Maya Chen", email: "maya@signalbrief.dev", title: "Account Executive", external: false },
-      { name: "Alex Rivera", email: "alex@acme.example", title: "VP Revenue Operations", external: true },
-      { name: "Priya Shah", email: "priya@acme.example", title: "Director of Sales Enablement", external: true },
+      { name: "Taylor Morgan", email: "taylor@openrouter.ai", title: "Applied AI Lead", external: true },
+      { name: "Jordan Kim", email: "jordan@openrouter.ai", title: "Developer Platform", external: true },
     ],
-    account: { name: "Acme Corp", domain: "acme.example" },
+    account: { name: "OpenRouter", domain: "openrouter.ai" },
   };
   const evidence: Evidence[] = [
-    { source: "crm", title: "Expansion opportunity", detail: "$180k enterprise expansion is in discovery. Target close: Sep 30. Champion: Alex Rivera. Last activity was 8 days ago.", confidence: "high" },
-    { source: "gong", title: "Last call — June 18", detail: "Alex wants fewer handoffs and better forecast hygiene. Priya raised concern about rep adoption and a six-week enablement window.", observedAt: "2026-06-18T14:00:00.000Z", confidence: "high" },
-    { source: "web", title: "New go-to-market leader", detail: "Acme appointed a new CRO with a mandate to move the company upmarket and standardize revenue operations.", url: "https://example.com/acme-cro", confidence: "medium" },
-    { source: "web", title: "Hiring signal", detail: "Acme is hiring 14 enterprise account executives and three sales enablement roles across North America.", url: "https://example.com/acme-careers", confidence: "medium" },
+    { source: "crm", title: "Synthetic CRM — applied AI evaluation", detail: "Evaluation stage. The team wants a production-shaped workflow that demonstrates model portability, BYOK, structured outputs, observability, and clear failure handling—not a generic chat wrapper.", confidence: "high" },
+    { source: "gong", title: "Synthetic Gong discovery — interview scenario", detail: "The strongest proof point is a concise workflow that uses OpenRouter as the model control plane, shows exact provider and model traces, and is honest about mocked upstream data.", observedAt: "2026-08-01T15:00:00.000Z", confidence: "high" },
+    { source: "web", title: "Provider routing documentation", detail: "OpenRouter supports provider selection across models with routing controls for price, throughput, and latency, plus fallbacks when a provider is unavailable.", url: "https://openrouter.ai/docs/guides/routing/provider-selection", confidence: "high" },
+    { source: "web", title: "Structured outputs documentation", detail: "OpenRouter supports strict JSON Schema structured outputs for compatible models, allowing applications to validate model responses before using them downstream.", url: "https://openrouter.ai/docs/structured-outputs", confidence: "high" },
+    { source: "web", title: "OpenRouter quickstart", detail: "OpenRouter exposes an OpenAI-compatible API for accessing hundreds of models through a unified endpoint while keeping application attribution and keys server-side.", url: "https://openrouter.ai/docs/quickstart", confidence: "high" },
   ];
   const brief: MeetingBrief = {
-    accountName: "Acme Corp",
+    accountName: "OpenRouter",
     meetingTitle: meeting.title,
     meetingTime: startsAt,
-    whyNow: "A new CRO, rapid enterprise hiring, and an active $180k expansion create a narrow window to anchor your product in Acme’s new operating model.",
-    accountSnapshot: ["Moving upmarket under a newly appointed CRO", "Hiring 14 enterprise AEs plus three enablement roles", "$180k expansion opportunity is currently in discovery"],
-    relationshipContext: ["Alex Rivera is the champion and owns revenue operations", "Last Gong call: fewer handoffs and forecast hygiene were the top priorities", "Priya Shah flagged rep adoption and a six-week enablement window"],
-    recommendedPlays: ["Tie the expansion to the CRO’s standardization mandate", "Lead with an adoption plan that fits the six-week window", "Propose a forecast-hygiene success metric for the pilot"],
-    discoveryQuestions: ["What must be standardized before the new enterprise hires ramp?", "How will the CRO measure forecast improvement this quarter?", "What would make Priya confident that adoption risk is contained?"],
-    watchOuts: ["Eight-day engagement gap", "Enablement bandwidth may constrain rollout"],
-    sources: [{ label: "HubSpot opportunity" }, { label: "Gong call · Jun 18" }, { label: "Company announcement", url: "https://example.com/acme-cro" }],
+    whyNow: "OpenRouter’s value is clearest inside a real workflow: this demo turns its routing, BYOK, and structured-output capabilities into an auditable pre-call brief that lands in Slack.",
+    accountSnapshot: ["Unified API and SDK access to hundreds of AI models", "Routes providers by price, throughput, latency, and availability", "Supports BYOK and strict structured outputs for production control"],
+    relationshipContext: ["Applied AI evaluation—not a generic model-wrapper exercise", "The team wants transparent traces, bounded data, and honest mocks", "A working Slack handoff is the proof that orchestration reaches a user"],
+    recommendedPlays: ["Lead with OpenRouter as the control plane behind the workflow", "Show the provider, model, latency, schema, and recovery path in the trace", "Close on which customer workflow OpenRouter would want to productionize next"],
+    discoveryQuestions: ["Which applied-AI workflows best demonstrate OpenRouter beyond API compatibility?", "What reliability and observability signals matter most before a workflow is customer-ready?", "Where would provider routing create the clearest user-visible advantage?"],
+    watchOuts: ["Do not present synthetic Gong or CRM records as real OpenRouter data", "Avoid pitching a generic LLM wrapper—center routing, control, and reliability"],
+    sources: [
+      { label: "Provider routing docs", url: "https://openrouter.ai/docs/guides/routing/provider-selection" },
+      { label: "Structured outputs docs", url: "https://openrouter.ai/docs/structured-outputs" },
+      { label: "OpenRouter quickstart", url: "https://openrouter.ai/docs/quickstart" },
+      { label: "Synthetic CRM evaluation record" },
+      { label: "Synthetic Gong discovery record" },
+    ],
     confidence: "high",
     generatedAt: now.toISOString(),
   };
-  return { id: "acme-expansion", label: "Acme Corp", stage: "Expansion", summary: "Multi-thread an active expansion around a new CRO mandate.", meeting, evidence, brief };
+  return { id: "openrouter-applied-ai", label: "OpenRouter", stage: "Applied AI", summary: "Position a production workflow around OpenRouter routing, control, and reliability.", meeting, evidence, brief };
 }
 
 function northstarScenario(now: Date): DemoScenario {
@@ -132,7 +139,7 @@ function lumenScenario(now: Date): DemoScenario {
 }
 
 export function getDemoScenarios(now = new Date()): DemoScenario[] {
-  return [acmeScenario(now), northstarScenario(now), lumenScenario(now)];
+  return [openRouterScenario(now), northstarScenario(now), lumenScenario(now)];
 }
 
 export function getDemoScenario(id: string, now = new Date()) {

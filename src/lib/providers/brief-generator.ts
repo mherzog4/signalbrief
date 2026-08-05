@@ -9,19 +9,16 @@ import { z } from "zod";
 import { getConfig } from "@/lib/config";
 import { meetingBriefSchema, type Evidence, type Meeting, type MeetingBrief } from "@/lib/domain";
 
-// Model providers support a narrower JSON Schema dialect than Zod. In
-// particular, OpenRouter's OpenAI route rejects the `format: "uri"` emitted by
-// z.string().url(). Keep the model contract portable, then validate URLs with
-// the full domain schema before returning the brief.
+// The model selects and synthesizes the sales angle. Identity, scheduling, and
+// citations remain deterministic so a provider can never rewrite the meeting
+// time, account name, or evidence links.
 const generatedBriefSchema = meetingBriefSchema
-  .omit({ generatedAt: true, sources: true })
-  .extend({
-    sources: z.array(
-      z.object({
-        label: z.string(),
-        url: z.string().nullable(),
-      }),
-    ).max(6),
+  .omit({
+    accountName: true,
+    meetingTitle: true,
+    meetingTime: true,
+    sources: true,
+    generatedAt: true,
   });
 
 const systemPrompt = `You are an elite account-based selling research analyst.
@@ -92,10 +89,10 @@ export async function generateBrief(meeting: Meeting, evidence: Evidence[]): Pro
 
   return meetingBriefSchema.parse({
     ...output,
-    sources: output.sources.map((source) => ({
-      label: source.label,
-      url: source.url ?? undefined,
-    })),
+    accountName: meeting.account.name,
+    meetingTitle: meeting.title,
+    meetingTime: meeting.startsAt,
+    sources: evidence.slice(0, 6).map((item) => ({ label: item.title, url: item.url })),
     generatedAt: new Date().toISOString(),
   });
 }

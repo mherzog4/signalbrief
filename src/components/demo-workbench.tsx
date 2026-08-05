@@ -13,7 +13,8 @@ type DemoRunResult = {
   generationDurationMs: number;
   delivery?: {
     delivered: boolean;
-    mode: "webhook" | "bot" | "dry-run" | "unconfigured";
+    mode: "webhook" | "bot" | "dry-run" | "unconfigured" | "error";
+    error?: string;
   };
   trace: {
     runId: string;
@@ -182,7 +183,7 @@ export function DemoWorkbench({
                     <div className="brief-section"><strong>What we already know</strong><ul>{brief.relationshipContext.map((item) => <li key={item}>{item}</li>)}</ul></div>
                   </div>
                   <div className="brief-section plays"><strong>Your play</strong>{brief.recommendedPlays.slice(0, 3).map((item, index) => <p key={item}><span>{index + 1}</span>{item}</p>)}</div>
-                  <div className="brief-footer"><span>Gong</span><span>HubSpot</span><span>Public web</span><a href="#execution-trace">Inspect run <ChevronRight size={13} /></a></div>
+                  <div className="brief-footer"><span>Gong</span><span>HubSpot</span><span>Public web</span>{result?.trace.provider === "openrouter" && <span>OpenRouter AI</span>}<a href="#execution-trace">Inspect run <ChevronRight size={13} /></a></div>
                 </div>
               </div>
             </div>
@@ -232,6 +233,9 @@ export function DemoWorkbench({
         )}
         {result?.delivery?.delivered && (
           <p className="synthetic-note"><Check size={12} /> Delivered to Slack via {result.delivery.mode}.</p>
+        )}
+        {result?.delivery?.mode === "error" && (
+          <p className="synthetic-note">{result.delivery.error}</p>
         )}
         <p className="synthetic-note"><Check size={12} /> Gong, HubSpot, and public records are synthetic. Adapter contracts, parallel fan-out, schema validation, trace timings, and Slack rendering are production code.</p>
       </div>

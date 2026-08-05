@@ -5,28 +5,61 @@ import type { Meeting, MeetingBrief } from "@/lib/domain";
 import { fetchJson } from "@/lib/http";
 
 type SlackBlock = Record<string, unknown>;
+type SlackPayload = {
+  text: string;
+  attachments: Array<{ color: string; blocks: SlackBlock[] }>;
+};
 
 const section = (text: string): SlackBlock => ({ type: "section", text: { type: "mrkdwn", text } });
 
-function bullets(items: string[]) {
-  return items.map((item) => `• ${item}`).join("\n");
+function escapeMrkdwn(value: string) {
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 }
 
-export function briefToSlackBlocks(brief: MeetingBrief): SlackBlock[] {
-  const time = new Intl.DateTimeFormat("en-US", { weekday: "short", hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(new Date(brief.meetingTime));
-  const sourceLinks = brief.sources.map((source) => source.url ? `<${source.url}|${source.label}>` : source.label).join("  ·  ");
+function bullets(items: string[]) {
+  return items.slice(0, 3).map((item) => `• ${escapeMrkdwn(item)}`).join("\n");
+}
+
+export function briefToSlackBlocks(brief: MeetingBrief, attribution = "Prepared by Signalbrief"): SlackBlock[] {
+  const meetingDate = new Date(brief.meetingTime);
+  const time = Number.isNaN(meetingDate.getTime())
+    ? "Upcoming meeting"
+    : new Intl.DateTimeFormat("en-US", { weekday: "short", hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(meetingDate);
+  const sourceLinks = brief.sources.slice(0, 3).map((source) => source.url
+    ? `<${source.url}|${escapeMrkdwn(source.label)}>`
+    : escapeMrkdwn(source.label)).join("  ·  ");
+  const questions = brief.discoveryQuestions.slice(0, 2).map((question) => `• ${escapeMrkdwn(question)}`).join("\n");
+  const watchOut = brief.watchOuts[0] ? escapeMrkdwn(brief.watchOuts[0]) : "No material risk surfaced—validate assumptions early.";
+
   return [
-    { type: "header", text: { type: "plain_text", text: `Pre-call brief · ${brief.accountName}`, emoji: true } },
-    section(`*${brief.meetingTitle}*\n${time}  ·  Confidence: *${brief.confidence}*`),
+    { type: "header", text: { type: "plain_text", text: brief.accountName.slice(0, 150), emoji: true } },
+    section(`*PRE-CALL BRIEF*  ·  ${escapeMrkdwn(brief.meetingTitle)}\n${time}  ·  *${brief.confidence} confidence*`),
+    section(`*WHY NOW*\n${escapeMrkdwn(brief.whyNow)}`),
+    {
+      type: "section",
+      fields: [
+        { type: "mrkdwn", text: `*ACCOUNT IN 30 SECONDS*\n${bullets(brief.accountSnapshot)}` },
+        { type: "mrkdwn", text: `*WHAT WE ALREADY KNOW*\n${bullets(brief.relationshipContext)}` },
+      ],
+    },
     { type: "divider" },
-    section(`*Why now*\n${brief.whyNow}`),
-    section(`*Account in 30 seconds*\n${bullets(brief.accountSnapshot)}`),
-    section(`*What we already know*\n${bullets(brief.relationshipContext)}`),
-    section(`*Recommended plays*\n${bullets(brief.recommendedPlays)}`),
-    section(`*Ask these*\n${brief.discoveryQuestions.map((question, index) => `${index + 1}. ${question}`).join("\n")}`),
-    ...(brief.watchOuts.length ? [section(`*Watch-outs*\n${bullets(brief.watchOuts)}`)] : []),
-    { type: "context", elements: [{ type: "mrkdwn", text: sourceLinks ? `Sources: ${sourceLinks}` : "Sources: no linked evidence" }] },
+    section(`*YOUR PLAY*\n${brief.recommendedPlays.slice(0, 3).map((play, index) => `${index + 1}.  ${escapeMrkdwn(play)}`).join("\n")}`),
+    {
+      type: "section",
+      fields: [
+        { type: "mrkdwn", text: `*ASK ON THE CALL*\n${questions}` },
+        { type: "mrkdwn", text: `*WATCH FOR*\n⚠️ ${watchOut}` },
+      ],
+    },
+    { type: "context", elements: [{ type: "mrkdwn", text: `${sourceLinks ? `*Sources:* ${sourceLinks}  ·  ` : ""}${escapeMrkdwn(attribution)}` }] },
   ];
+}
+
+export function briefToSlackPayload(brief: MeetingBrief, attribution?: string): SlackPayload {
+  return {
+    text: `Pre-call brief for ${brief.accountName}: ${brief.whyNow}`,
+    attachments: [{ color: "#e56f61", blocks: briefToSlackBlocks(brief, attribution) }],
+  };
 }
 
 async function slackApi<T>(method: string, body: unknown): Promise<T> {
@@ -39,8 +72,11 @@ async function slackApi<T>(method: string, body: unknown): Promise<T> {
 
 export async function deliverBrief(meeting: Meeting, brief: MeetingBrief) {
   const config = getConfig();
-  const blocks = briefToSlackBlocks(brief);
-  const text = `Pre-call brief for ${brief.accountName}: ${brief.whyNow}`;
+  const attribution = config.AI_PROVIDER === "openrouter"
+    ? `Powered by OpenRouter · ${config.AI_MODEL}`
+    : `Prepared with ${config.AI_PROVIDER} · ${config.AI_MODEL}`;
+  const payload = briefToSlackPayload(brief, attribution);
+  const blocks = payload.attachments[0].blocks;
 
   if (config.DRY_RUN === "true") return { delivered: false, mode: "dry-run" as const, blocks };
   if (config.SLACK_BOT_TOKEN) {
@@ -51,7 +87,7 @@ export async function deliverBrief(meeting: Meeting, brief: MeetingBrief) {
       channel = opened.channel.id;
     }
     if (!channel) throw new Error("Set SLACK_CHANNEL_ID or map the meeting owner to a Slack member ID");
-    const posted = await slackApi<{ ok: boolean; error?: string }>("chat.postMessage", { channel, text, blocks, unfurl_links: false });
+    const posted = await slackApi<{ ok: boolean; error?: string }>("chat.postMessage", { channel, ...payload, unfurl_links: false });
     if (!posted.ok) throw new Error(`Slack delivery failed: ${posted.error ?? "unknown error"}`);
     return { delivered: true, mode: "bot" as const };
   }
@@ -59,7 +95,7 @@ export async function deliverBrief(meeting: Meeting, brief: MeetingBrief) {
     const response = await fetch(config.SLACK_WEBHOOK_URL, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ text, blocks }),
+      body: JSON.stringify(payload),
     });
     if (!response.ok) throw new Error(`Slack webhook delivery failed (${response.status})`);
     return { delivered: true, mode: "webhook" as const };

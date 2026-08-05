@@ -66,9 +66,23 @@ export async function POST(request: Request) {
 
     const result = await runDemoScenario(scenarioId);
     if (!result) return Response.json({ error: "Unknown scenario", requestId }, { status: 404, headers: responseHeaders });
-    const delivery = deliverToSlack
-      ? await deliverBrief(result.scenario.meeting, result.brief)
-      : undefined;
+    let delivery;
+    if (deliverToSlack) {
+      try {
+        delivery = await deliverBrief(result.scenario.meeting, result.brief);
+      } catch (error) {
+        logEvent("demo.delivery_failed", {
+          requestId,
+          scenarioId,
+          error: error instanceof Error ? error.name : "UnknownError",
+        }, "error");
+        delivery = {
+          delivered: false,
+          mode: "error" as const,
+          error: "Slack delivery failed, but your brief was generated successfully.",
+        };
+      }
+    }
     logEvent("demo.completed", {
       requestId,
       scenarioId,

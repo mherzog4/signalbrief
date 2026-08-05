@@ -25,6 +25,6 @@ describe("research pipeline", () => {
 
     expect(result.connectorResults[0].status).toBe("error");
     expect(result.connectorResults[1].status).toBe("ok");
-    expect(result.brief.accountName).toBe("Acme Corp");
+    expect(result.brief.accountName).toBe("OpenRouter");
   });
 });
