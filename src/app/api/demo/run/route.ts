@@ -7,7 +7,7 @@ import { logEvent } from "@/lib/observability";
 import { demoRateLimiter, demoSlackDeliveryRateLimiter, getClientKey, rateLimitHeaders } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
-export const maxDuration = 30;
+export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
 const requestSchema = z.object({

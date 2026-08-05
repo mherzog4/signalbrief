@@ -13,7 +13,7 @@ const demoResponse = await fetch(`${baseUrl}/api/demo/run`, {
   method: "POST",
   headers: { "content-type": "application/json", "user-agent": "signalbrief-uptime-monitor/1.0" },
   body: JSON.stringify({ scenarioId: "northstar-validation" }),
-  signal: AbortSignal.timeout(30_000),
+  signal: AbortSignal.timeout(60_000),
 });
 assert(demoResponse.ok, `Demo endpoint returned ${demoResponse.status}`);
 const demo = await demoResponse.json();
