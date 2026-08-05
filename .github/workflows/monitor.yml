@@ -3,7 +3,7 @@ name: Production smoke test
 on:
   workflow_dispatch:
   schedule:
-    - cron: "23,53 * * * *"
+    - cron: "23 */6 * * *"
 
 permissions:
   contents: read

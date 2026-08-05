@@ -13,6 +13,17 @@ export async function GET(request: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // The interactive demo intentionally falls back to a synthetic meeting, but
+  // an unattended cron must never turn that fixture into recurring AI spend.
+  if (config.DEMO_MODE === "true" && !config.GOOGLE_ACCESS_TOKEN) {
+    return Response.json({
+      ok: true,
+      scanned: 0,
+      results: [],
+      skipped: "demo_mode_without_calendar",
+    });
+  }
+
   try {
     const meetings = await listUpcomingMeetings();
     const results = [];
