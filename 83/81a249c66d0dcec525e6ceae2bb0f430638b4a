@@ -1,0 +1,35 @@
+scripts/smoke-test.mjs
+  s_ed4d5c9bcc57d0::t_acbd95c996e460 16
+  s_ed4d5c9bcc57d0::t_7b36580a14b34f 22-27,32
+src/lib/providers/brief-generator.ts
+  s_ed4d5c9bcc57d0::t_7b36580a14b34f 12-21,23-25
+  s_ed4d5c9bcc57d0::t_acbd95c996e460 22,93-100
+src/lib/__tests__/brief.test.ts
+  s_ed4d5c9bcc57d0::t_7b36580a14b34f 2,14,20,23-26
+  s_ed4d5c9bcc57d0::t_acbd95c996e460 15-19,21-22
+  s_2ac3e805338bf9::t_37ea88d01ac549 27-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "8381a249c66d0dcec525e6ceae2bb0f430638b4a",
+  "prompts": {},
+  "sessions": {
+    "s_2ac3e805338bf9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019fb9bb-1e64-7981-92e1-7d5fe269be20",
+        "model": "unknown"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_ed4d5c9bcc57d0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fba18-4237-7210-91a5-170750458fa8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
