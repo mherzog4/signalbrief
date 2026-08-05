@@ -48,7 +48,15 @@ describe("meeting brief contract", () => {
     expect(serialized).toContain("ASK");
     expect(serialized).toContain("Powered by OpenRouter");
     expect(serialized).toContain("Meridian AI");
+    expect(serialized).not.toContain("…");
     expect(payload.text).toBe("🎯 Meridian AI pre-call brief is ready");
     expect(payload.attachments[0].color).toBe("#e56f61");
+
+    const completeQuestion = "Which production workflow should we benchmark first to compare model quality, latency, reliability, and cost?";
+    const completePayload = JSON.stringify(briefToSlackBlocks({
+      ...getDemoBrief(),
+      discoveryQuestions: [completeQuestion, ...getDemoBrief().discoveryQuestions.slice(1)],
+    }, undefined, meeting));
+    expect(completePayload).toContain(completeQuestion);
   });
 });
