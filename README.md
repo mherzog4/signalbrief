@@ -95,9 +95,11 @@ Copy `.env.example` to `.env.local`. All providers are optional, and the health 
 
 ### Calendar
 
-Set `GOOGLE_ACCESS_TOKEN`, `GOOGLE_CALENDAR_ID`, and `INTERNAL_DOMAINS`. Signalbrief ignores all-day events and meetings without a resolvable external company domain.
+Set `GOOGLE_CALENDAR_ID` and `INTERNAL_DOMAINS`, then configure either a short-lived `GOOGLE_ACCESS_TOKEN` or renewable `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_REFRESH_TOKEN` credentials. Request only the `calendar.events.readonly` scope. Signalbrief refreshes server-side access automatically and ignores all-day events and meetings without a resolvable external company domain.
 
-The token-based adapter is best for one calendar per deployment. For a team deployment, use a managed OAuth refresh flow or extend the calendar adapter with Google Workspace domain-wide delegation.
+For an end-to-end synthetic rehearsal without inviting fake attendees, create an event whose description contains `[signalbrief-demo:meridian-applied-ai]`, `[signalbrief-demo:northstar-validation]`, or `[signalbrief-demo:lumen-first-call]`. The real event title and time trigger the pipeline while Gong, CRM, public signals, and attendees remain clearly labeled scenario fixtures.
+
+The refresh-token adapter is best for one calendar per deployment. For a team deployment, use a managed OAuth installation flow or extend the adapter with Google Workspace domain-wide delegation.
 
 ### Gong
 

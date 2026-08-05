@@ -17,6 +17,9 @@ const envSchema = z.object({
   ANTHROPIC_API_KEY: z.string().optional(),
   GOOGLE_CALENDAR_ID: z.string().default("primary"),
   GOOGLE_ACCESS_TOKEN: z.string().optional(),
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  GOOGLE_REFRESH_TOKEN: z.string().optional(),
   INTERNAL_DOMAINS: z.string().default(""),
   LOOKAHEAD_MINUTES: z.coerce.number().int().min(10).max(240).default(45),
   GONG_ACCESS_KEY: z.string().optional(),
@@ -50,7 +53,11 @@ export type IntegrationName = "calendar" | "gong" | "crm" | "web" | "ai" | "slac
 
 export function getIntegrationStatus(config = getConfig()): Record<IntegrationName, boolean> {
   return {
-    calendar: Boolean(config.GOOGLE_ACCESS_TOKEN),
+    calendar: Boolean(config.GOOGLE_ACCESS_TOKEN || (
+      config.GOOGLE_CLIENT_ID
+      && config.GOOGLE_CLIENT_SECRET
+      && config.GOOGLE_REFRESH_TOKEN
+    )),
     gong: Boolean(config.GONG_ACCESS_KEY && config.GONG_ACCESS_SECRET),
     crm: Boolean(config.HUBSPOT_ACCESS_TOKEN),
     web: Boolean(config.TAVILY_API_KEY),

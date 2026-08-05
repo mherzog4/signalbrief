@@ -1,11 +1,13 @@
 import { getConfig } from "@/lib/config";
 import { getDemoMeeting } from "@/lib/demo/data";
+import { getDemoScenario } from "@/lib/demo/scenarios";
 import type { Meeting } from "@/lib/domain";
 import { fetchJson } from "@/lib/http";
 
 type GoogleEvent = {
   id?: string;
   summary?: string;
+  description?: string;
   start?: { dateTime?: string };
   end?: { dateTime?: string };
   organizer?: { displayName?: string; email?: string };
@@ -13,6 +15,40 @@ type GoogleEvent = {
 };
 
 const personalDomains = new Set(["gmail.com", "outlook.com", "hotmail.com", "icloud.com", "yahoo.com"]);
+const demoMarkerPattern = /\[signalbrief-demo:([a-z0-9-]+)\]/i;
+
+let cachedGoogleToken: { value: string; expiresAt: number } | undefined;
+
+function demoScenarioIdFromEvent(event: GoogleEvent) {
+  return event.description?.match(demoMarkerPattern)?.[1];
+}
+
+async function getGoogleAccessToken() {
+  const config = getConfig();
+  if (config.GOOGLE_ACCESS_TOKEN) return config.GOOGLE_ACCESS_TOKEN;
+  if (cachedGoogleToken && cachedGoogleToken.expiresAt > Date.now() + 60_000) return cachedGoogleToken.value;
+  if (!config.GOOGLE_CLIENT_ID || !config.GOOGLE_CLIENT_SECRET || !config.GOOGLE_REFRESH_TOKEN) return undefined;
+
+  const token = await fetchJson<{ access_token: string; expires_in?: number }>(
+    "google-oauth",
+    "https://oauth2.googleapis.com/token",
+    {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        client_id: config.GOOGLE_CLIENT_ID,
+        client_secret: config.GOOGLE_CLIENT_SECRET,
+        refresh_token: config.GOOGLE_REFRESH_TOKEN,
+        grant_type: "refresh_token",
+      }).toString(),
+    },
+  );
+  cachedGoogleToken = {
+    value: token.access_token,
+    expiresAt: Date.now() + (token.expires_in ?? 3_600) * 1_000,
+  };
+  return cachedGoogleToken.value;
+}
 
 function accountFromEvent(event: GoogleEvent, internalDomains: Set<string>) {
   const external = event.attendees?.find(({ email, self }) => {
@@ -34,7 +70,8 @@ function accountFromEvent(event: GoogleEvent, internalDomains: Set<string>) {
 
 export async function listUpcomingMeetings(now = new Date()): Promise<Meeting[]> {
   const config = getConfig();
-  if (!config.GOOGLE_ACCESS_TOKEN) {
+  const accessToken = await getGoogleAccessToken();
+  if (!accessToken) {
     return config.DEMO_MODE === "true" ? [getDemoMeeting()] : [];
   }
 
@@ -49,7 +86,7 @@ export async function listUpcomingMeetings(now = new Date()): Promise<Meeting[]>
   url.searchParams.set("maxResults", "20");
 
   const data = await fetchJson<{ items?: GoogleEvent[] }>("google-calendar", url, {
-    headers: { authorization: `Bearer ${config.GOOGLE_ACCESS_TOKEN}` },
+    headers: { authorization: `Bearer ${accessToken}` },
   });
   const internalDomains = new Set(
     config.INTERNAL_DOMAINS.split(",").map((value) => value.trim().toLowerCase()).filter(Boolean),
@@ -62,8 +99,23 @@ export async function listUpcomingMeetings(now = new Date()): Promise<Meeting[]>
   }
 
   return (data.items ?? []).flatMap((event): Meeting[] => {
-    const account = accountFromEvent(event, internalDomains);
+    const demoScenarioId = config.DEMO_MODE === "true" ? demoScenarioIdFromEvent(event) : undefined;
+    const demoScenario = demoScenarioId ? getDemoScenario(demoScenarioId, now) : undefined;
+    const account = accountFromEvent(event, internalDomains) ?? demoScenario?.meeting.account;
     if (!event.id || !event.start?.dateTime || !event.end?.dateTime || !account) return [];
+
+    const attendees = (event.attendees ?? []).flatMap((attendee) => {
+      if (!attendee.email) return [];
+      const domain = attendee.email.split("@")[1]?.toLowerCase();
+      return [{
+        name: attendee.displayName ?? attendee.email.split("@")[0],
+        email: attendee.email,
+        external: !attendee.self && !internalDomains.has(domain),
+      }];
+    });
+    if (demoScenario && !attendees.some((attendee) => attendee.external)) {
+      attendees.push(...demoScenario.meeting.attendees.filter((attendee) => attendee.external));
+    }
 
     return [{
       id: event.id,
@@ -72,16 +124,11 @@ export async function listUpcomingMeetings(now = new Date()): Promise<Meeting[]>
       endsAt: new Date(event.end.dateTime).toISOString(),
       ownerName: event.organizer?.displayName ?? event.organizer?.email?.split("@")[0] ?? "Account executive",
       ownerSlackId: event.organizer?.email ? slackUserMap[event.organizer.email.toLowerCase()] : undefined,
-      attendees: (event.attendees ?? []).flatMap((attendee) => {
-        if (!attendee.email) return [];
-        const domain = attendee.email.split("@")[1]?.toLowerCase();
-        return [{
-          name: attendee.displayName ?? attendee.email.split("@")[0],
-          email: attendee.email,
-          external: !attendee.self && !internalDomains.has(domain),
-        }];
-      }),
+      demoScenarioId: demoScenario?.id,
+      attendees,
       account,
     }];
   });
 }
+
+export const __testables = { demoScenarioIdFromEvent };

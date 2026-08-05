@@ -16,6 +16,8 @@ Hosted demo: [signalbrief-alpha.vercel.app](https://signalbrief-alpha.vercel.app
 5. Inspect the execution trace. It shows per-connector latency and evidence count, model mode, generation time, total duration, normalized evidence, and a unique run ID.
 6. Switch scenarios to demonstrate how the same contract behaves with dense late-stage evidence versus sparse first-call evidence.
 
+For the full-loop version, place `[signalbrief-demo:meridian-applied-ai]` in a real Google Calendar event description. The calendar title and timing are real; the marker safely selects synthetic account evidence, and the normal cron, OpenRouter compiler, and Slack delivery paths handle the rest.
+
 ## What is mocked
 
 The demo does not claim to access a real Gong, CRM, or calendar tenant. Upstream payloads are synthetic and clearly labeled in the product.

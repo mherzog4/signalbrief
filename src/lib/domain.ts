@@ -14,6 +14,7 @@ export const meetingSchema = z.object({
   endsAt: z.string().datetime(),
   ownerName: z.string(),
   ownerSlackId: z.string().optional(),
+  demoScenarioId: z.string().optional(),
   attendees: z.array(attendeeSchema),
   account: z.object({
     name: z.string(),

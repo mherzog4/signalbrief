@@ -1,6 +1,6 @@
 import { bearerMatches } from "@/lib/auth";
 import { listUpcomingMeetings } from "@/lib/connectors/calendar";
-import { getConfig } from "@/lib/config";
+import { getConfig, getIntegrationStatus } from "@/lib/config";
 import { processMeeting } from "@/lib/pipeline/process-meeting";
 
 export const runtime = "nodejs";
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
 
   // The interactive demo intentionally falls back to a synthetic meeting, but
   // an unattended cron must never turn that fixture into recurring AI spend.
-  if (config.DEMO_MODE === "true" && !config.GOOGLE_ACCESS_TOKEN) {
+  if (config.DEMO_MODE === "true" && !getIntegrationStatus(config).calendar) {
     return Response.json({
       ok: true,
       scanned: 0,
