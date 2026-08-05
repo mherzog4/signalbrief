@@ -1,0 +1,42 @@
+src/components/demo-workbench.tsx
+  s_ed4d5c9bcc57d0::t_249b1681a5e24a 14-17,37-43,77,111-115,233-234
+  s_e4df1182db8d3d::t_605f8958ed5d41 235
+README.md
+  s_ed4d5c9bcc57d0::t_fef99d1135a312 22,122,132,155
+src/app/page.tsx
+  s_ed4d5c9bcc57d0::t_249b1681a5e24a 21,36,120-125
+src/lib/config.ts
+  s_ed4d5c9bcc57d0::t_249b1681a5e24a 35
+src/lib/rate-limit.ts
+  s_ed4d5c9bcc57d0::t_249b1681a5e24a 38
+docs/interview-demo.md
+  s_ed4d5c9bcc57d0::t_fef99d1135a312 14,54
+src/app/api/demo/run/route.ts
+  s_ed4d5c9bcc57d0::t_249b1681a5e24a 3-4,7,15,28-29,45-66,69-71,76,79
+.env.example
+  s_ed4d5c9bcc57d0::t_fef99d1135a312 47-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "a9b3d34e8eb8cb55e6889d5d9d8dea6eeb5ecf78",
+  "prompts": {},
+  "sessions": {
+    "s_e4df1182db8d3d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019fa5e1-a72d-7f73-acf8-8c1d6b47bdb2",
+        "model": "unknown"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_ed4d5c9bcc57d0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fba18-4237-7210-91a5-170750458fa8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
