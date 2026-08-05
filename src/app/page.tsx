@@ -18,8 +18,11 @@ import {
 } from "lucide-react";
 
 import { DemoWorkbench } from "@/components/demo-workbench";
+import { CalendarConnect } from "@/components/calendar-connect";
 import { getConfig, getIntegrationStatus } from "@/lib/config";
+import { isGoogleCalendarConnected } from "@/lib/connectors/calendar";
 import { Logo } from "@/components/logo";
+import { isGoogleOAuthConfigured } from "@/lib/google-oauth";
 import { getDemoScenarioPreviews } from "@/lib/demo/scenarios";
 import { getRepositoryLinks, siteConfig } from "@/lib/site";
 
@@ -32,8 +35,10 @@ const nav = [
   { label: "Sources", href: "#integrations", icon: Radio },
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ calendar?: string }> }) {
   const config = getConfig();
+  const { calendar: calendarOutcome } = await searchParams;
+  const calendarConnected = await isGoogleCalendarConnected();
   const scenarios = getDemoScenarioPreviews();
   const meeting = scenarios[0].meeting;
   const northstarMeeting = scenarios[1].meeting;
@@ -112,13 +117,19 @@ export default function DashboardPage() {
             </section>
 
             <section className="panel integrations" id="integrations">
-              <div className="panel-head"><div><p className="eyebrow">Source health</p><h2>Connected signals</h2></div><span className="count-badge">4 simulated</span></div>
+              <div className="panel-head"><div><p className="eyebrow">Source health</p><h2>Connected signals</h2></div><span className="count-badge">{calendarConnected ? "1 live · 3 simulated" : "4 simulated"}</span></div>
               <div className="source-list">
-                <Source icon="G" color="blue" name="Google Calendar" detail="Synthetic meeting feed" />
+                <Source icon="G" color="blue" name="Google Calendar" detail={calendarConnected ? "Live upcoming events" : "Synthetic meeting feed"} status={calendarConnected ? "Connected" : "Mock adapter"} />
                 <Source icon="G" color="purple" name="Gong" detail="Conversation fixtures" />
                 <Source icon="H" color="orange" name="HubSpot" detail="CRM opportunity fixtures" />
                 <Source icon="↗" color="green" name="Public web" detail="News + hiring fixtures" />
               </div>
+              <CalendarConnect
+                connected={calendarConnected}
+                oauthConfigured={isGoogleOAuthConfigured()}
+                configurationUrl={repositoryLinks.configuration}
+                outcome={calendarOutcome === "connected" || calendarOutcome === "error" ? calendarOutcome : undefined}
+              />
               <a className="manage-link" href={repositoryLinks.configuration} target="_blank" rel="noreferrer">Configure sources <ArrowRight size={14} /></a>
             </section>
           </div>
@@ -145,6 +156,6 @@ export default function DashboardPage() {
   );
 }
 
-function Source({ icon, color, name, detail }: { icon: string; color: string; name: string; detail: string }) {
-  return <div className="source-row"><span className={`source-icon ${color}`}>{icon}</span><div><strong>{name}</strong><p>{detail}</p></div><span className="connected-dot"><i />Mock adapter</span></div>;
+function Source({ icon, color, name, detail, status = "Mock adapter" }: { icon: string; color: string; name: string; detail: string; status?: string }) {
+  return <div className="source-row"><span className={`source-icon ${color}`}>{icon}</span><div><strong>{name}</strong><p>{detail}</p></div><span className="connected-dot"><i />{status}</span></div>;
 }

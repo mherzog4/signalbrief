@@ -83,7 +83,7 @@ See [docs/architecture.md](docs/architecture.md) for boundaries, trust assumptio
 | Web + API | Next.js 16 App Router | One TypeScript deployment for dashboard, protected routes, and cron endpoint |
 | Hosting | Vercel Functions + Cron | Native scheduling and simple self-hosted deployment |
 | AI | Vercel AI SDK + Zod | Provider portability and validated structured output |
-| State | Upstash-compatible Redis, optional | Atomic delivery locks without requiring a full database |
+| State | Upstash-compatible Redis | Atomic delivery locks and encrypted calendar credentials without a full database |
 | UI | React Server Components + CSS | Fast first paint and very little client JavaScript |
 | Tests | Vitest + Playwright | Fast contracts plus a real Chromium workflow in CI |
 
@@ -95,11 +95,21 @@ Copy `.env.example` to `.env.local`. All providers are optional, and the health 
 
 ### Calendar
 
-Set `GOOGLE_CALENDAR_ID` and `INTERNAL_DOMAINS`, then configure either a short-lived `GOOGLE_ACCESS_TOKEN` or renewable `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_REFRESH_TOKEN` credentials. Request only the `calendar.events.readonly` scope. Signalbrief refreshes server-side access automatically and ignores all-day events and meetings without a resolvable external company domain.
+Create a Google Cloud OAuth client with application type **Web application**, enable the Google Calendar API, and add this authorized redirect URI:
+
+```text
+https://YOUR_SIGNALBRIEF_DOMAIN/api/integrations/google/callback
+```
+
+For local development, also add `http://localhost:3000/api/integrations/google/callback`. Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ADMIN_API_KEY`, and the two `UPSTASH_REDIS_REST_*` values. Open the dashboard, enter the admin key under **Google Calendar**, and choose **Connect**. Signalbrief requests only `calendar.events.readonly`, receives the refresh token during Google’s consent flow, encrypts it with AES-256-GCM, and persists it in the deployer-owned Redis. The admin key never enters the redirect URL or browser storage.
+
+`GOOGLE_ACCESS_TOKEN` and `GOOGLE_REFRESH_TOKEN` remain optional developer fallbacks; a normal repo cloner does not need to generate either one. Rotating `ADMIN_API_KEY` requires reconnecting the calendar because that key also protects the stored credential.
+
+Set `GOOGLE_CALENDAR_ID` and `INTERNAL_DOMAINS` to control the watched calendar and identify internal attendees. Signalbrief refreshes access automatically and ignores all-day events and meetings without a resolvable external company domain.
 
 For an end-to-end synthetic rehearsal without inviting fake attendees, create an event whose description contains `[signalbrief-demo:meridian-applied-ai]`, `[signalbrief-demo:northstar-validation]`, or `[signalbrief-demo:lumen-first-call]`. The real event title and time trigger the pipeline while Gong, CRM, public signals, and attendees remain clearly labeled scenario fixtures.
 
-The refresh-token adapter is best for one calendar per deployment. For a team deployment, use a managed OAuth installation flow or extend the adapter with Google Workspace domain-wide delegation.
+The included installation flow intentionally connects one calendar per deployment. A hosted multi-workspace edition should store one encrypted grant per tenant and add application authentication, tenant isolation, revocation, and audit logs.
 
 ### Gong
 

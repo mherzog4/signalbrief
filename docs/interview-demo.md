@@ -16,7 +16,7 @@ Hosted demo: [signalbrief-alpha.vercel.app](https://signalbrief-alpha.vercel.app
 5. Inspect the execution trace. It shows per-connector latency and evidence count, model mode, generation time, total duration, normalized evidence, and a unique run ID.
 6. Switch scenarios to demonstrate how the same contract behaves with dense late-stage evidence versus sparse first-call evidence.
 
-For the full-loop version, place `[signalbrief-demo:meridian-applied-ai]` in a real Google Calendar event description. The calendar title and timing are real; the marker safely selects synthetic account evidence, and the normal cron, OpenRouter compiler, and Slack delivery paths handle the rest.
+For the full-loop version, configure the Google OAuth client and Upstash variables, then connect a calendar from the dashboard. Place `[signalbrief-demo:meridian-applied-ai]` in a real event description. The calendar title and timing are real; the marker safely selects synthetic account evidence, and the normal cron, OpenRouter compiler, and Slack delivery paths handle the rest.
 
 ## What is mocked
 
@@ -37,7 +37,8 @@ Curated brief fixtures are the default compiler for the public deployment. This 
 - OpenRouter, OpenAI, and Anthropic provider selection
 - Slack Block Kit rendering
 - Protected live generation and cron routes
-- Optional Redis delivery idempotency
+- Encrypted, renewable Google Calendar OAuth installation
+- Redis delivery idempotency and credential persistence
 - Request IDs, structured operational events, and a graceful UI error boundary
 - Best-effort public rate limiting with explicit headers
 - Scheduled production smoke tests and a real Chromium CI journey
@@ -81,4 +82,4 @@ It is the smallest credible OSS trust boundary. Credentials remain in the adopte
 
 ## Production gaps
 
-The interview demo intentionally does not hide the remaining work for a real customer deployment: renewable calendar OAuth, real provider credentials, Gong transcript retrieval, Slack OAuth, mandatory durable deduplication, durable jobs, tenant isolation, and provider-specific integration tests.
+The interview demo intentionally does not hide the remaining work for a real customer deployment: multi-tenant calendar installations, real provider credentials, Gong transcript retrieval, Slack OAuth, durable jobs, tenant isolation, revocation/audit controls, and provider-specific integration tests.

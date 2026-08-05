@@ -3,6 +3,7 @@ import { getDemoMeeting } from "@/lib/demo/data";
 import { getDemoScenario } from "@/lib/demo/scenarios";
 import type { Meeting } from "@/lib/domain";
 import { fetchJson } from "@/lib/http";
+import { readGoogleRefreshToken } from "@/lib/store/integration-store";
 
 type GoogleEvent = {
   id?: string;
@@ -27,7 +28,9 @@ async function getGoogleAccessToken() {
   const config = getConfig();
   if (config.GOOGLE_ACCESS_TOKEN) return config.GOOGLE_ACCESS_TOKEN;
   if (cachedGoogleToken && cachedGoogleToken.expiresAt > Date.now() + 60_000) return cachedGoogleToken.value;
-  if (!config.GOOGLE_CLIENT_ID || !config.GOOGLE_CLIENT_SECRET || !config.GOOGLE_REFRESH_TOKEN) return undefined;
+  if (!config.GOOGLE_CLIENT_ID || !config.GOOGLE_CLIENT_SECRET) return undefined;
+  const refreshToken = config.GOOGLE_REFRESH_TOKEN ?? await readGoogleRefreshToken();
+  if (!refreshToken) return undefined;
 
   const token = await fetchJson<{ access_token: string; expires_in?: number }>(
     "google-oauth",
@@ -38,7 +41,7 @@ async function getGoogleAccessToken() {
       body: new URLSearchParams({
         client_id: config.GOOGLE_CLIENT_ID,
         client_secret: config.GOOGLE_CLIENT_SECRET,
-        refresh_token: config.GOOGLE_REFRESH_TOKEN,
+        refresh_token: refreshToken,
         grant_type: "refresh_token",
       }).toString(),
     },
@@ -48,6 +51,16 @@ async function getGoogleAccessToken() {
     expiresAt: Date.now() + (token.expires_in ?? 3_600) * 1_000,
   };
   return cachedGoogleToken.value;
+}
+
+export async function isGoogleCalendarConnected() {
+  const config = getConfig();
+  if (config.GOOGLE_ACCESS_TOKEN || config.GOOGLE_REFRESH_TOKEN) return true;
+  try {
+    return Boolean(await readGoogleRefreshToken());
+  } catch {
+    return false;
+  }
 }
 
 function accountFromEvent(event: GoogleEvent, internalDomains: Set<string>) {
