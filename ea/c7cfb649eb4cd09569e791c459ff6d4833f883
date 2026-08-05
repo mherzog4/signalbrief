@@ -1,0 +1,21 @@
+scripts/smoke-test.mjs
+  s_ed4d5c9bcc57d0::t_0a8c5a0d856fc6 16
+src/app/api/demo/run/route.ts
+  s_ed4d5c9bcc57d0::t_0a8c5a0d856fc6 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "eac7cfb649eb4cd09569e791c459ff6d4833f883",
+  "prompts": {},
+  "sessions": {
+    "s_ed4d5c9bcc57d0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fba18-4237-7210-91a5-170750458fa8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
